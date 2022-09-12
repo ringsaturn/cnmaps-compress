@@ -1,1 +1,1 @@
-# Try tzf's data pipelien for China adcode
+# Try tzf's data pipeline for China adcode

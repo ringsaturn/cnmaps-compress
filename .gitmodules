@@ -1,0 +1,3 @@
+[submodule "cnmaps"]
+	path = cnmaps
+	url = https://github.com/cnmetlab/cnmaps

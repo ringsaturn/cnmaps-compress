@@ -1,0 +1,53 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: write
+  deployments: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      GOPROXY: https://proxy.golang.org
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: 1.18
+
+      - uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cache/go-build
+            ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+
+      - name: Gen
+        run: |
+          make gen
+
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v3.1.0
+        if: ${{ github.ref_name == 'main' }}
+        with:
+          name: "land-reduce-json"
+          path: "cnmaps/cnmaps/data/geojson.min/administrative/amap/land-reduce-json"
+
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v3.1.0
+        if: ${{ github.ref_name == 'main' }}
+        with:
+          name: "land-reduce-pb"
+          path: "cnmaps/cnmaps/data/geojson.min/administrative/amap/land-reduce-pb"
+
